@@ -1,0 +1,82 @@
+hash: 753ff6899223ed0506bec465eab31dd81246b6f887774ce04dd1be8db5a20d43
+updated: 2017-06-06T17:17:44.905781+08:00
+imports:
+- name: github.com/boj/redistore
+  version: 4562487a4bee9a7c272b72bfaeda4917d0a47ab9
+- name: github.com/bradfitz/gomemcache
+  version: 1952afaa557dc08e8e0d89eafab110fb501c1a2b
+  subpackages:
+  - memcache
+- name: github.com/bradleypeabody/gorilla-sessions-memcache
+  version: 75ee37df8664a47cd5d9eb84d41e1f2b08086893
+- name: github.com/garyburd/redigo
+  version: 95d11dba2d44531bdb8022752b98912baafae03a
+  subpackages:
+  - internal
+  - redis
+  - redisx
+- name: github.com/gin-contrib/sessions
+  version: 447fdfad36b791744edb51dee50ab1e1a24384d4
+- name: github.com/gin-gonic/gin
+  version: d5b353c5d5a560322e6d96121c814115562501f7
+  subpackages:
+  - binding
+  - render
+- name: github.com/go-sql-driver/mysql
+  version: e3f0fdcf52770a162d5a4540ddb8d9957ff456d1
+- name: github.com/golang/protobuf
+  version: 2402d76f3d41f928c7902a765dfc872356dd3aad
+  subpackages:
+  - proto
+- name: github.com/gorilla/context
+  version: 08b5f424b9271eedf6f9f0ce86cb9396ed337a42
+- name: github.com/gorilla/securecookie
+  version: e59506cc896acb7f7bf732d4fdf5e25f7ccd8983
+- name: github.com/gorilla/sessions
+  version: 8b6b4cd75f07f7ee036eb37b8127bd40ab1efc49
+- name: github.com/jinzhu/gorm
+  version: 5174cc5c242a728b435ea2be8a2f7f998e15429b
+- name: github.com/jinzhu/inflection
+  version: 1c35d901db3da928c72a72d8458480cc9ade058f
+- name: github.com/kidstuff/mongostore
+  version: 256d65ac5b0e35e7c5ebb3f175c0bed1e5c2b253
+- name: github.com/manucorporat/sse
+  version: ee05b128a739a0fb76c7ebd3ae4810c1de808d6d
+- name: github.com/Masterminds/vcs
+  version: 3084677c2c188840777bff30054f2b553729d329
+- name: github.com/mattn/go-isatty
+  version: fc9e8d8ef48496124e79ae0df75490096eccf6fe
+- name: github.com/satori/go.uuid
+  version: 879c5887cd475cd7864858769793b2ceb0d44feb
+- name: github.com/tidwall/btree
+  version: 9876f1454cf0993a53d74c27196993e345f50dd1
+- name: github.com/tidwall/buntdb
+  version: 83418750ee775aa24194606fffe7fec391975a65
+- name: github.com/tidwall/gjson
+  version: c784c417818f59d6597274642d8ac1d09efc9b01
+- name: github.com/tidwall/grect
+  version: ba9a043346eba55344e40d66a5e74cfda3a9d293
+- name: github.com/tidwall/match
+  version: 173748da739a410c5b0b813b956f89ff94730b4c
+- name: github.com/tidwall/rtree
+  version: d4a8a3d30d5729f85edfba1745241f3a621d0359
+- name: golang.org/x/crypto/bcrypt
+  version: e1a4589e7d3ea14a3352255d04b6f1a418845e5e
+- name: golang.org/x/net/context
+  version: f315505cf3349909cdf013ea56690da34e96a451
+- name: golang.org/x/sys/unix
+  version: b90f89a1e7a9c1f6b918820b3daa7f08488c8594
+- name: gopkg.in/configo.v2
+  version: d9ba688c0c7e510b2c7ecbce24ea9376a16a38d1
+- name: gopkg.in/go-playground/validator.v8
+  version: c193cecd124b5cc722d7ee5538e945bdb3348435
+- name: gopkg.in/mgo.v2
+  version: 3f83fa5005286a7fe593b055f0d7771a7dce4655
+  subpackages:
+  - bson
+  - internal/json
+  - internal/sasl
+  - internal/scram
+- name: gopkg.in/yaml.v2
+  version: cd8b52f8269e0feb286dfeef29f8fe4d5b397e0b
+testImports: []

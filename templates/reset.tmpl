@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<link rel="stylesheet" href="http://cdn.amazeui.org/amazeui/2.7.2/css/amazeui.min.css">
+	<style type="text/css">
+		.none{
+			display:none;
+		}
+		*[v-cloak]{
+			display:none;
+		}
+		.fz20{
+			font-size:20px;
+		}
+		.pd-left0{
+			padding-left:0;
+		}
+	</style>
+</head>
+<body>
+	<div id="app" class="container" style="max-width:400px;margin:50px auto;">
+		<h1 class="am-text-center">重置密码</h1>
+		<form class="am-form am-form-horizontal" id="resetForm" style="margin-top:10px;" novalidate onSubmit="return false">
+			<input type="hidden" name="type" value="reset" />
+			<div class="am-form-group">
+			    <label for="doc-ipt-pwd-2" for="password" class="am-u-sm-3 am-form-label am-text-right">设置密码</label>
+			    <div class="am-u-sm-9">
+			      <input type="password" id="password" placeholder="请设置密码" name="password" v-model="formObj.password.value" required minlength="6" />
+			    </div>
+			</div>
+		  	<div class="am-form-group">
+			    <label for="doc-ipt-pwd-2" for="vpassword" class="am-u-sm-3 am-form-label am-text-right">确认密码</label>
+			    <div class="am-u-sm-9">
+			      <input type="password" id="vpassword" placeholder="请再次输入密码" name="vpassword" v-model="formObj.vpassword.value" required minlength="6" data-equal-to="#password" data-validation-message="两次密码输入不一致" />
+			    </div>
+		  	</div>
+		  	<div class="am-form-group">
+			    <div class="am-u-sm-12">
+			      <button type="submit" class="am-btn am-btn-success am-btn-block" style="margin-top:30px">提交</button>
+			    </div>
+		  	</div>
+		</form>
+		<div class="am-modal am-modal-alert modal" tabindex="-1" id="my-alert">
+		  <div class="am-modal-dialog">
+		    <div class="am-modal-hd" v-text="alertTitle"></div>
+		    <div class="am-modal-bd" v-text="alertMsg"></div>
+		    <div class="am-modal-footer" v-show="alertBtn">
+		      <span class="am-modal-btn">确定</span>
+		    </div>
+		  </div>
+		</div>
+	</div>
+	<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+	<script type="text/javascript" src="http://cdn.amazeui.org/amazeui/2.7.2/js/amazeui.min.js"></script>
+	<script type="text/javascript" src="../static/js/vue2.min.js"></script>
+	<script type="text/javascript">
+		var app = new Vue({
+		  	el: '#app',
+		  	data: {
+		  		canSubmit:true,
+		  		alertMsg:'',
+		  		alertTitle:'重置失败',
+		  		codeBtn:'获取验证码',
+		  		alertBtn:true,
+		  		counting:false,
+		  		time:60,
+		  		formObj:{
+					password:{
+						alert:false,
+						value:'',
+						msg:'密码由字母、数字、下划线组成，至少六位',
+						rexp:function(val){
+							var myRexp = new RegExp(/^\w{6,}$/);
+							return myRexp.test(val);
+						}
+					},
+					vpassword:{
+						alert:false,
+						value:'',
+						msg:'两次密码输入不一致',
+						rexp:function(val){
+							var myRexp = new RegExp(/^\w{6,}$/);
+							return myRexp.test(val);
+						}
+					},
+			  	}
+		  	},
+		  	mounted:function(){
+		  		var that = this;
+		  		$('#resetForm').validator({
+				    onValid: function(validity) {
+				      $(validity.field).closest('.am-form-group').find('.am-alert').hide();
+				    },
+				    onInValid: function(validity) {
+				      var $field = $(validity.field);
+				      var $group = $field.closest('.am-form-group');
+				      var $alert = $group.find('.am-alert');
+				      // 使用自定义的提示信息 或 插件内置的提示信息
+				      var msg = $field.data('validationMessage') || this.getValidationMessage(validity);
+
+				      if (!$alert.length) {
+				        $alert = $('<div class="am-alert am-alert-danger"></div>').hide().
+				          appendTo($group.children('div'));
+				      }
+
+				      $alert.html(msg).show();
+				    },
+				    submit:function(){
+				    	if(!!this.isFormValid()){
+				    		that.formSubmit();
+				    	}
+				    }
+				});
+		  	},
+		  	methods:{
+		  		formSubmit:function(){
+		  			let that = this;
+		  			if(!!this.canSubmit){
+		  				this.canSubmit = false;
+		  				$.ajax({
+			  				type:'POST',
+			  				url:'/forget',
+			  				data:$('#resetForm').serialize(),
+			  				success:function(data){
+			  					that.canSubmit = true;
+			  					if(data.Code=='0'){//验证成功，可以重置密码
+			  						that.alertMsg = '密码设置成功';
+			  						that.alertTitle='恭喜你';
+			  						that.alertBtn = false;
+			  						$('.modal').modal('open');
+			  						setTimeout(function(){
+			  							location.href='/login';
+			  						},1500)
+			  					}else{
+			  						that.alertMsg = data.Message;
+			  						$('.modal').modal('open')
+			  					}
+			  				},
+			  				error:function(){
+			  					that.alertMsg = '重置失败';
+		  						that.alertTitle='对不起';
+		  						$('.modal').modal('open');
+			  					that.canSubmit = true;
+			  				}
+			  			})
+		  			}
+		  		}
+		  	}
+		})
+	</script>
+</body>
+</html>

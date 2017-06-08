@@ -1,0 +1,16 @@
+package: .
+import:
+- package: github.com/satori/go.uuid
+  version: ^1.1.0
+- package: github.com/tidwall/buntdb
+- package: github.com/tidwall/btree
+- package: github.com/tidwall/gjson
+- package: github.com/tidwall/match
+- package: github.com/tidwall/rtree
+- package: github.com/tidwall/grect
+- package: github.com/jinzhu/gorm
+  version: ^1.0.0
+- package: github.com/jinzhu/inflection
+- package: github.com/gin-gonic/gin
+- package: github.com/gin-contrib/sessions
+- package: gopkg.in/configo.v2

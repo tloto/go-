@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<link rel="stylesheet" href="http://cdn.amazeui.org/amazeui/2.7.2/css/amazeui.min.css">
+	<link rel="stylesheet" href="../static/css/login.css">
+</head>
+<body>
+	<div id="app" class="container" style="max-width:400px;margin:0 auto">
+		<div class="tabs">
+			<div class="tab-nav tab-left" v-bind:class="{ 'tab-active': !quickLogin }" @click="customer">账号登陆</div>
+			<div class="tab-nav" v-bind:class="{ 'tab-active': quickLogin }" @click="quick">快速登陆</div>
+		</div>
+		<div class="login1" v-show="!quickLogin" v-cloak>
+			<h1 class="am-text-center">玛娜花园</h1>
+			<form class="am-form am-form-horizontal" id="loginForm" style="margin-top:10px;" novalidate onSubmit="return false">
+			  <div class="am-form-group">
+			    <label for="doc-ipt-3" for="username" class="am-u-sm-3 am-form-label am-text-right">用户名</label>
+			    <div class="am-u-sm-9">
+			      <input type="text" type="text" id="username" placeholder="输入用户名（至少6个字符）" name="username" v-model="formObj.username.value" required minlength="6" />
+			    </div>
+			  </div>
+
+			  <div class="am-form-group">
+			    <label for="doc-ipt-pwd-2" for="password" class="am-u-sm-3 am-form-label am-text-right">密码</label>
+			    <div class="am-u-sm-9">
+			      <input type="password" id="password" placeholder="请输入密码" name="password" v-model="formObj.password.value" required minlength="6" />
+			    </div>
+			  </div>
+			  <div class="am-form-group">
+			    <div class="am-u-sm-12">
+			      <button type="submit" class="am-btn am-btn-success am-btn-block" style="margin-top:30px">登陆</button>
+			    </div>
+			  </div>
+			  <div class="links">
+			  	<a class="link_left" href="/register">注册</a>
+			  	<a class="link_right" href="/forget">忘记密码</a>
+			  </div>
+			</form>
+		</div>
+		<div class="login1" v-show="quickLogin" v-cloak>
+			<h1 class="am-text-center">玛娜花园</h1>
+			<form class="am-form am-form-horizontal" id="quickForm" style="margin-top:10px;" novalidate onSubmit="return false">
+				<input type="hidden" name="way" value="1" />
+			  <div class="am-form-group">
+			    <label for="doc-ipt-pwd-2" for="mobile" class="am-u-sm-3 am-form-label am-text-right">手机号</label>
+			    <div class="am-u-sm-9">
+			      <input type="number" id="mobile" placeholder="请输入手机号" name="mobile" v-model="formObj.mobile.value" required minlength="11" maxlength="11" pattern="^1[345789]\d{9}$" data-validation-message="手机号格式错误"/>
+			    </div>
+			  </div>
+			  <div class="am-form-group">
+			    <label for="doc-ipt-pwd-2" for="code" class="am-u-sm-3 am-form-label am-text-right">验证码</label>
+			    <div class="am-u-sm-5">
+			      <input type="number" id="code" placeholder="请输入验证码" name="code" v-model="formObj.code.value" required minlength="4" maxlength="4" pattern="^\d{4}$" data-validation-message="验证码为4位数字"/>
+			    </div>
+			    <section class="am-u-sm-4 pd-left0">
+			    	<button type="button" class="am-btn am-btn-primary" v-text="codeBtn" :disabled="counting" @click="getCode"></button>
+			    </section>
+			  </div>
+			  <div class="am-form-group">
+			    <div class="am-u-sm-12">
+			      <button type="submit" class="am-btn am-btn-success am-btn-block" style="margin-top:30px">登陆</button>
+			    </div>
+			  </div>
+			  <div class="links">
+			  	<a class="link_left" href="/register">注册</a>
+			  	<a class="link_right" href="/forget">忘记密码</a>
+			  </div>
+			</form>
+		</div>
+		<div class="am-modal am-modal-alert modal" tabindex="-1" id="my-alert">
+		  <div class="am-modal-dialog">
+		    <div class="am-modal-hd" v-text="alertTitle">登陆失败</div>
+		    <div class="am-modal-bd" v-text="alertMsg"></div>
+		    <div class="am-modal-footer">
+		      <span class="am-modal-btn">确定</span>
+		    </div>
+		  </div>
+		</div>
+		<!-- <div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+		  <div class="modal-dialog modal-sm" role="document">
+			<div class="modal-content">
+		        <div class="modal-header">
+		          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+		          <h4 class="modal-title" id="mySmallModalLabel">登陆失败</h4>
+		        </div>
+		        <div class="modal-body danger fz20" v-text="alertMsg"></div>
+		    </div>
+		  </div>
+		</div> -->
+	</div>
+	<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+	<script type="text/javascript" src="http://cdn.amazeui.org/amazeui/2.7.2/js/amazeui.min.js"></script>
+	<script type="text/javascript" src="../static/js/vue2.min.js"></script>
+	<script type="text/javascript">
+		var app = new Vue({
+		  	el: '#app',
+		  	data: {
+		  		canSubmit:true,
+		  		alertMsg:'',
+		  		alertTitle:'',
+		  		codeBtn:'获取验证码',
+		  		alertBtn:true,
+		  		counting:false,
+		  		time:60,
+		  		showReset:false,
+		  		quickLogin:true,
+		  		formObj:{
+			  		username:{
+			  			alert:false,
+			  			value:'',
+			  			msg:'请输入至少六位用户名',
+			  			rexp:function(val){
+							var myRexp = new RegExp(/^[0-9A-Za-z.@\-\_]{6,}$/);
+							return myRexp.test(val);
+						}
+					},
+					password:{
+						alert:false,
+						value:'',
+						msg:'密码由字母、数字、下划线组成，至少六位',
+						rexp:function(val){
+							var myRexp = new RegExp(/^\w{6,}$/);
+							return myRexp.test(val);
+						}
+					},
+					mobile:{
+						alert:false,
+						value:'',
+						msg:'手机号由11位数字组成',
+						rexp:function(val){
+							var myRexp = new RegExp(/^1[345789]\d{9}$/);
+							return myRexp.test(val);
+						}
+					},
+					code:{
+						alert:false,
+						value:'',
+						msg:'验证码由4位数字组成',
+						rexp:function(val){
+							var myRexp = new RegExp(/^\w{6,}$/);
+							return myRexp.test(val);
+						}
+					}
+			  	}
+		  	},
+		  	mounted:function(){
+		  		var that = this;
+		  		$('#loginForm').validator({
+				    onValid: function(validity) {
+				      $(validity.field).closest('.am-form-group').find('.am-alert').hide();
+				    },
+
+				    onInValid: function(validity) {
+				      var $field = $(validity.field);
+				      var $group = $field.closest('.am-form-group');
+				      var $alert = $group.find('.am-alert');
+				      // 使用自定义的提示信息 或 插件内置的提示信息
+				      var msg = $field.data('validationMessage') || this.getValidationMessage(validity);
+
+				      if (!$alert.length) {
+				        $alert = $('<div class="am-alert am-alert-danger"></div>').hide().
+				          appendTo($group.children('div'));
+				      }
+
+				      $alert.html(msg).show();
+				    },
+				    submit:function(){
+				    	if(!!this.isFormValid()){
+				    		that.formSubmit();
+				    	}
+				    }
+				});
+				$('#quickForm').validator({
+				    onValid: function(validity) {
+				      $(validity.field).closest('.am-form-group').find('.am-alert').hide();
+				    },
+				    onInValid: function(validity) {
+				      var $field = $(validity.field);
+				      var $group = $field.closest('.am-form-group');
+				      var $alert = $group.find('.am-alert');
+				      // 使用自定义的提示信息 或 插件内置的提示信息
+				      var msg = $field.data('validationMessage') || this.getValidationMessage(validity);
+
+				      if (!$alert.length) {
+				        $alert = $('<div class="am-alert am-alert-danger"></div>').hide().
+				          appendTo($group.children('div'));
+				      }
+
+				      $alert.html(msg).show();
+				    },
+				    submit:function(){
+				    	if(!!this.isFormValid()){
+				    		that.formSubmit2();
+				    	}
+				    }
+				});
+				/*是否获取验证码*/
+				if(!!this.getCookie('counting')&&this.getCookie('counting')!='0'){
+					this.counting = true;
+					this.time = this.getCookie('counting')
+  					let countDown = setInterval(function(){
+	  					if(that.time>0){
+	  						that.time--;
+	  						that.setCookie('counting',that.time);
+	  						that.codeBtn = that.time+'s';
+	  					}else{
+	  						that.time = 60;
+	  						that.counting = false;
+	  						that.setCookie('counting','0');
+	  						that.codeBtn = '获取验证码';
+	  						clearInterval(countDown);
+	  					}
+	  				},1000)
+				}
+		  	},
+		  	methods:{
+		  		setCookie:function(name,value){
+					var exp = new Date();
+					exp.setTime(exp.getTime() + 60*1000);
+					document.cookie = name + "="+ escape (value) + ";expires=" + exp.toGMTString();
+				},
+				getCookie:function(name){
+					var arr,reg=new RegExp("(^| )"+name+"=([^;]*)(;|$)");
+					if(arr=document.cookie.match(reg))
+					return unescape(arr[2]);
+					else
+					return null;
+				},
+		  		getCode:function(){
+		  			let that = this;
+		  			let legalMobile = this.formObj.mobile.rexp(this.formObj.mobile.value);
+	  				if(!this.counting&&!!legalMobile){
+	  					this.counting = true;
+	  					$.ajax({
+			  				type:'POST',
+			  				url:'/msg/send',
+			  				data:{mobile:that.formObj.mobile.value},
+			  				success:function(data){
+			  					if(data.Code=='0'){
+			  						that.alertMsg = '短消息已发送';
+			  						that.alertTitle='你好';
+			  						$('.modal').modal('open');
+			  					}else{
+			  						that.alertMsg = data.Message;
+			  						that.alertTitle='对不起';
+			  						$('.modal').modal('open');
+			  					}
+			  				}
+			  			})
+	  					let countDown = setInterval(function(){
+		  					if(that.time>0){
+		  						that.time--;
+		  						that.setCookie('counting',that.time);
+		  						that.codeBtn = that.time+'s';
+		  					}else{
+		  						that.time = 60;
+		  						that.counting = false;
+		  						that.setCookie('counting','0');
+		  						that.codeBtn = '获取验证码';
+		  						clearInterval(countDown);
+		  					}
+		  				},1000)
+	  				}
+		  		},
+		  		formSubmit:function(){
+		  			var that = this;
+		  			$.ajax({
+		  				type:'POST',
+		  				url:'/login',
+		  				data:$('#loginForm').serialize(),
+		  				success:function(data){
+		  					if(data.Code=='0'){
+		  						location.href=data.Data.URL;
+		  					}else{
+		  						that.alertMsg = data.Message;
+		  						$('.modal').modal('open')
+		  					}
+		  				}
+		  			})
+		  		},
+		  		formSubmit2:function(){
+		  			var that = this;
+		  			$.ajax({
+		  				type:'POST',
+		  				url:'/login',
+		  				data:$('#quickForm').serialize(),
+		  				success:function(data){
+		  					if(data.Code=='0'){
+		  						location.href=data.Data.URL;
+		  					}else{
+		  						that.alertMsg = data.Message;
+		  						$('.modal').modal('open')
+		  					}
+		  				}
+		  			})
+		  		},
+		  		customer:function(){
+		  			this.quickLogin = false;
+		  		},
+		  		quick:function(){
+		  			this.quickLogin = true;
+		  		}
+		  	}
+		})
+	</script>
+</body>
+</html>
